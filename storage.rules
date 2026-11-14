@@ -1,0 +1,11 @@
+rules_version = '2';
+
+// EIT CAMS — Phase 1 Foundation Firebase Storage Security Rules (Default-Deny Baseline)
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

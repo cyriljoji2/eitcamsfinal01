@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@import "./styles/tokens.css";
+
+@layer base {
+  html,
+  body {
+    font-family: var(--eit-font-sans);
+    background-color: var(--eit-color-bg-canvas);
+    color: var(--eit-color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}

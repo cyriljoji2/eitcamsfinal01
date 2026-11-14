@@ -1,0 +1,6 @@
+{
+  "name": "EIT CAMS",
+  "description": "Electrix Institute of Technology Campus Administration Management System — institutional portals, administration, academics, examinations, finance, and student services.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

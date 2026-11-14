@@ -1,0 +1,47 @@
+rules_version = '2';
+
+// EIT CAMS — Phase 1 Foundation Firestore Security Rules (Default-Deny Baseline)
+//
+// Security Principles:
+// 1. Default deny on all paths.
+// 2. Never trust browser-supplied user IDs or role values.
+// 3. Server-verified roles and permissions must be enforced via server-managed
+//    user/role records or verified server-assigned custom claims.
+// 4. No public access to private student, parent, or employee records.
+// 5. Sensitive institutional operations and audit logs are server-write only.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Server-managed identity/RBAC directory (clients may only read their own record)
+    match /users/{userId} {
+      allow get: if isValidId(userId) && isOwner(userId);
+      allow list, create, update, delete: if false;
+    }
+
+    // Immutable institutional audit trail (written exclusively via Admin SDK / Cloud Functions)
+    match /auditLogs/{logId} {
+      allow read, write: if false;
+    }
+  }
+}
